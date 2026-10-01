@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Horas con Amor</string>
+    <string name="navigation_home">Inicio</string>
+    <string name="navigation_history">Historial</string>
+    <string name="navigation_settings">Ajustes</string>
+    <string name="home_placeholder">El contador de horas aparecerá aquí.</string>
+    <string name="history_placeholder">Aquí aparecerá el historial.</string>
+    <string name="settings_placeholder">Aquí estarán los ajustes.</string>
+</resources>
