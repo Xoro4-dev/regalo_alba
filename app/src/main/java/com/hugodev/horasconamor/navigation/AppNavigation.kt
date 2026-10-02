@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.hugodev.horasconamor.R
+import com.hugodev.horasconamor.ui.OvertimeViewModel
 import com.hugodev.horasconamor.ui.counter.CounterScreen
 import com.hugodev.horasconamor.ui.history.HistoryScreen
 import com.hugodev.horasconamor.ui.settings.SettingsScreen
@@ -45,7 +46,7 @@ private val destinations = listOf(
 )
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(viewModel: OvertimeViewModel) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -83,9 +84,9 @@ fun AppNavigation() {
             startDestination = AppRoute.Home,
             modifier = Modifier.padding(innerPadding),
         ) {
-            composable(AppRoute.Home) { CounterScreen() }
-            composable(AppRoute.History) { HistoryScreen() }
-            composable(AppRoute.Settings) { SettingsScreen() }
+            composable(AppRoute.Home) { CounterScreen(viewModel) }
+            composable(AppRoute.History) { HistoryScreen(viewModel) }
+            composable(AppRoute.Settings) { SettingsScreen(viewModel) }
         }
     }
 }
