@@ -52,6 +52,8 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
             .takeIf { it in INCREMENT_OPTIONS }
             ?: DEFAULT_INCREMENT_MINUTES,
     )
+    val angerLevel = MutableStateFlow(preferences.getInt(ANGER_LEVEL_KEY, 0).coerceIn(0, 100))
+    val beerChance = MutableStateFlow(preferences.getInt(BEER_CHANCE_KEY, 100).coerceIn(0, 100))
     val historyStartDate: StateFlow<LocalDate> = historyWeekStart
 
     val todaySummary: StateFlow<TodaySummary> = today
@@ -62,7 +64,11 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
                 val minutesByDate = entries.associate { it.date to it.minutes }
                 TodaySummary(
                     date = date,
-                    todayMinutes = minutesByDate[date.toString()] ?: 0,
+                    todayMinutes = if (OvertimeCalendar.isWorkday(date)) {
+                        minutesByDate[date.toString()] ?: 0
+                    } else {
+                        0
+                    },
                     weekMinutes = entries.sumOf(OvertimeEntryEntity::minutes),
                 )
             }
@@ -75,10 +81,9 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
 
     val historyDays: StateFlow<List<DailyOvertime>> = historyWeekStart
         .flatMapLatest { start ->
-            repository.observeBetween(start, start.plusDays(6)).map { entries ->
+            repository.observeBetween(start, OvertimeCalendar.weekEnd(start)).map { entries ->
                 val minutesByDate = entries.associate { it.date to it.minutes }
-                (0..6).map { offset ->
-                    val date = start.plusDays(offset.toLong())
+                OvertimeCalendar.workdaysOfWeek(start).map { date ->
                     DailyOvertime(date, minutesByDate[date.toString()] ?: 0)
                 }
             }
@@ -86,13 +91,25 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = OvertimeCalendar.daysOfWeek(today.value).map { DailyOvertime(it, 0) },
+            initialValue = OvertimeCalendar.workdaysOfWeek(today.value).map { DailyOvertime(it, 0) },
         )
 
     fun setIncrementMinutes(minutes: Int) {
         require(minutes in INCREMENT_OPTIONS) { "Unsupported increment: $minutes" }
         preferences.edit().putInt(INCREMENT_MINUTES_KEY, minutes).apply()
         incrementMinutes.value = minutes
+    }
+
+    fun setAngerLevel(level: Int) {
+        val safeLevel = level.coerceIn(0, 100)
+        preferences.edit().putInt(ANGER_LEVEL_KEY, safeLevel).apply()
+        angerLevel.value = safeLevel
+    }
+
+    fun setBeerChance(chance: Int) {
+        val safeChance = chance.coerceIn(0, 100)
+        preferences.edit().putInt(BEER_CHANCE_KEY, safeChance).apply()
+        beerChance.value = safeChance
     }
 
     fun moveHistoryWeek(weeks: Long) {
@@ -116,6 +133,7 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun adjustMinutes(date: LocalDate, delta: Int): OvertimeChange? =
         withContext(Dispatchers.IO) {
+            if (!OvertimeCalendar.isWorkday(date)) return@withContext null
             val adjustment = repository.adjustMinutes(date, delta)
             if (adjustment.currentMinutes == adjustment.previousMinutes) {
                 null
@@ -129,6 +147,7 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
         }
 
     suspend fun setMinutes(date: LocalDate, minutes: Int) {
+        if (!OvertimeCalendar.isWorkday(date)) return
         withContext(Dispatchers.IO) {
             repository.setMinutes(date, minutes)
         }
@@ -148,5 +167,7 @@ class OvertimeViewModel(application: Application) : AndroidViewModel(application
 
         private const val PREFERENCES_FILE = "horas_con_amor_preferences"
         private const val INCREMENT_MINUTES_KEY = "increment_minutes"
+        private const val ANGER_LEVEL_KEY = "anger_level"
+        private const val BEER_CHANCE_KEY = "beer_chance"
     }
 }

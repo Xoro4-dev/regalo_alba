@@ -3,12 +3,20 @@
 - **Plataforma:** Android nativo con Kotlin, Jetpack Compose y Material 3.
 - **Datos:** almacenamiento local con Room; un registro consolidado por fecha local,
   con minutos enteros como unidad.
-- **Calendario:** las semanas empiezan el lunes. La fecha se almacena como ISO
-  (`YYYY-MM-DD`) para que los periodos semanales se consulten sin conversiones de zona
-  horaria.
+- **Calendario laboral:** la semana de trabajo va de lunes a viernes. No se permite
+  registrar sábados ni domingos y no se muestran en el historial ni se incluyen en
+  totales. La fecha se almacena como ISO (`YYYY-MM-DD`) para que los periodos semanales
+  se consulten sin conversiones de zona horaria.
 - **Edición:** sumar/restar usa el intervalo configurado (15, 30 o 60 minutos); el
   mínimo es cero. Los cambios desde Inicio se pueden deshacer.
-- **Preferencias:** el intervalo se guarda en preferencias privadas de la aplicación.
+- **Preferencias:** el intervalo, el medidor de enfado y la probabilidad de cerveza se
+  guardan en preferencias privadas de la aplicación. El medidor del amor es fijo al
+  100 % y no es interactivo.
+- **Reacción visual:** al incrementar, el contador vibra visualmente con un breve
+  temblor y un destello rojo; no se usa vibración física ni permisos del dispositivo.
+- **Mensajes semanales:** menos de 120 minutos, de 120 a 300 minutos inclusive y más
+  de 300 minutos.
+- **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
 - **Fuera de alcance explícito:** login, pantalla de acceso, cifrado de datos,
   autenticación biométrica, recursos personales (audio/foto/GIF), minijuegos,
   sincronización en la nube y publicación en Google Play.
@@ -18,9 +26,10 @@
 ## Verificación funcional mínima
 
 En Android Studio, ejecutar `:app:testDebugUnitTest` y `:app:assembleDebug`. Después,
-probar manualmente suma, resta sin saldo negativo, deshacer, persistencia tras cerrar
-la aplicación, cambio del intervalo, navegación semanal y edición de días pasados en
-un emulador o dispositivo API 26+.
+probar manualmente el temblor/destello al sumar, suma, resta sin saldo negativo,
+deshacer, persistencia tras cerrar la aplicación, cambios de medidores, que los días
+del historial sean solo laborables, los umbrales de mensajes semanales, navegación
+semanal y edición de días pasados en un emulador o dispositivo API 26+.
 
 ## Próximo bloque
 
