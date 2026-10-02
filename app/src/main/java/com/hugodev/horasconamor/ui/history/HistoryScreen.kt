@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hugodev.horasconamor.R
 import com.hugodev.horasconamor.domain.OvertimeCalendar
+import com.hugodev.horasconamor.domain.WeeklyMessageTier
 import com.hugodev.horasconamor.ui.DailyOvertime
 import com.hugodev.horasconamor.ui.OvertimeViewModel
 import kotlinx.coroutines.launch
@@ -48,8 +49,14 @@ fun HistoryScreen(viewModel: OvertimeViewModel) {
     val spanishLocale = Locale.forLanguageTag("es-ES")
     val dateFormatter = DateTimeFormatter.ofPattern("d MMM", spanishLocale)
     val fullDateFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM", spanishLocale)
+    val weekEndFormatter = DateTimeFormatter.ofPattern("d MMM yyyy", spanishLocale)
     val totalMinutes = days.sumOf(DailyOvertime::minutes)
-    val weekRange = "${weekStart.format(dateFormatter)} – ${weekStart.plusDays(6).format(DateTimeFormatter.ofPattern("d MMM yyyy", spanishLocale))}"
+    val weekRange = "${weekStart.format(dateFormatter)} – ${weekStart.plusDays(4).format(weekEndFormatter)}"
+    val weeklyMessage = when (OvertimeCalendar.weeklyMessageTier(totalMinutes)) {
+        WeeklyMessageTier.UNDER_TWO_HOURS -> stringResource(R.string.weekly_message_under_two)
+        WeeklyMessageTier.TWO_TO_FIVE_HOURS -> stringResource(R.string.weekly_message_two_to_five)
+        WeeklyMessageTier.OVER_FIVE_HOURS -> stringResource(R.string.weekly_message_over_five)
+    }
 
     Column(
         modifier = Modifier
@@ -114,6 +121,12 @@ fun HistoryScreen(viewModel: OvertimeViewModel) {
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                 )
+                Text(
+                    text = stringResource(R.string.workdays_only_hint),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f),
+                )
             }
         }
 
@@ -133,6 +146,25 @@ fun HistoryScreen(viewModel: OvertimeViewModel) {
                         }
                     },
                 )
+            }
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 8.dp),
+                    shape = RoundedCornerShape(22.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
+                ) {
+                    Text(
+                        text = weeklyMessage,
+                        modifier = Modifier.padding(18.dp),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
             }
         }
     }

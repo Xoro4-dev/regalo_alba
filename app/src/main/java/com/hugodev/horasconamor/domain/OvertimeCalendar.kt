@@ -8,12 +8,22 @@ object OvertimeCalendar {
     fun weekStart(date: LocalDate): LocalDate =
         date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-    fun weekEnd(date: LocalDate): LocalDate = weekStart(date).plusDays(6)
+    fun weekEnd(date: LocalDate): LocalDate = weekStart(date).plusDays(4)
 
-    fun daysOfWeek(date: LocalDate): List<LocalDate> {
+    fun workdaysOfWeek(date: LocalDate): List<LocalDate> {
         val start = weekStart(date)
-        return (0..6).map { start.plusDays(it.toLong()) }
+        return (0..4).map { start.plusDays(it.toLong()) }
     }
+
+    fun isWorkday(date: LocalDate): Boolean =
+        date.dayOfWeek != DayOfWeek.SATURDAY && date.dayOfWeek != DayOfWeek.SUNDAY
+
+    fun weeklyMessageTier(minutes: Int): WeeklyMessageTier =
+        when {
+            minutes < 120 -> WeeklyMessageTier.UNDER_TWO_HOURS
+            minutes <= 300 -> WeeklyMessageTier.TWO_TO_FIVE_HOURS
+            else -> WeeklyMessageTier.OVER_FIVE_HOURS
+        }
 
     fun formatDuration(minutes: Int): String {
         val safeMinutes = minutes.coerceAtLeast(0)
@@ -25,4 +35,11 @@ object OvertimeCalendar {
             else -> "$hours h $remainingMinutes min"
         }
     }
+
+}
+
+enum class WeeklyMessageTier {
+    UNDER_TWO_HOURS,
+    TWO_TO_FIVE_HOURS,
+    OVER_FIVE_HOURS,
 }

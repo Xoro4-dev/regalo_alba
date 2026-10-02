@@ -5,11 +5,13 @@
     <string name="navigation_settings">Ajustes</string>
     <string name="home_greeting">Un día menos para descansar</string>
     <string name="today_total_label">HORAS EXTRA DE HOY</string>
+    <string name="counter_status_label">ALERTA DE TURNO // HORAS EXTRA</string>
     <string name="increment_label">+%1$d min</string>
     <string name="decrement_label">−%1$d min</string>
     <string name="week_total_label">Esta semana</string>
     <string name="week_total_hint">Acumulado desde el lunes</string>
     <string name="counter_reassurance">Cada minuto cuenta. Y luego, a disfrutar.</string>
+    <string name="weekend_counter_message">Modo descanso activado. El contador vuelve el lunes; hoy no fichamos.</string>
     <string name="time_removed_message">Tiempo corregido</string>
     <string name="undo_action">Deshacer</string>
     <string name="history_title">Tu historial</string>
@@ -19,9 +21,25 @@
     <string name="remove_time_accessibility">Restar tiempo</string>
     <string name="add_time_accessibility">Añadir tiempo</string>
     <string name="settings_title">Ajustes</string>
+    <string name="settings_subtitle">Panel de control de la relación (versión beta)</string>
     <string name="increment_setting_title">Minutos por toque</string>
     <string name="increment_setting_description">Elige cuánto tiempo se suma o se resta con cada toque.</string>
+    <string name="anger_meter_title">¿Cómo de cabreada estás con tu novio?</string>
+    <string name="slider_range_hint">Mueve la barra del 0 al 100. El creador acepta su destino.</string>
+    <string name="percentage_label">%1$d%%</string>
+    <string name="anger_calm">Calma total. El novio sigue en periodo de prueba.</string>
+    <string name="anger_mild">Se detecta una pequeña perturbación en la fuerza.</string>
+    <string name="anger_warning">Alerta: se recomienda que el novio traiga cerveza.</string>
+    <string name="anger_critical">CÓDIGO ROJO. CREADOR, ALÉJATE DEL TECLADO.</string>
+    <string name="love_meter_title">¿Cuánto quieres a tu novio?</string>
+    <string name="love_meter_caption">No se puede editar. El resultado ya está científicamente decidido.</string>
+    <string name="beer_meter_title">Probabilidad de que te invite a una cerveza</string>
+    <string name="beer_meter_caption">Ajusta las expectativas. El contador no acepta reclamaciones.</string>
     <string name="local_storage_notice">El historial se guarda solo en este dispositivo.</string>
+    <string name="workdays_only_hint">Solo días laborables · lunes a viernes</string>
+    <string name="weekly_message_under_two">Muy bien mi niña, a trabajar lo justo y necesario para pagarte las cervezas.</string>
+    <string name="weekly_message_two_to_five">Guapaaaaaa recuerda que puedes dejar trabajo acumulado para la siguiente coordinadora.</string>
+    <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!!STOP WORKING¡¡¡¡¡</string>
     <string-array name="reaction_messages">
         <item>¡Ese reloj te debe una!</item>
         <item>Una más para la hucha del descanso.</item>

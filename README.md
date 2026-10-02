@@ -9,15 +9,18 @@ acceso ni cifrado de datos.
 - Contador diario con botones para sumar o restar minutos.
 - Intervalo configurable de 15, 30 o 60 minutos; comienza en 30 minutos.
 - Saldo diario nunca negativo y acción «Deshacer» después de un cambio.
-- Total de la semana, de lunes a domingo.
+- Total de la semana laboral, de lunes a viernes; sábados y domingos no se registran.
 - Historial semanal con navegación a semanas anteriores y corrección de días.
-- Persistencia local con Room y preferencias locales para el intervalo.
-- Interfaz en español con tema Material 3 claro y oscuro.
-- Frase humorística al añadir tiempo.
+- Reacción al sumar tiempo: sacudida breve, destello rojo y frase humorística.
+- Ajustes con medidor de enfado y probabilidad de cerveza; medidor del amor fijo al 100 %.
+- Persistencia local con Room y preferencias locales para el intervalo y medidores.
+- Interfaz en español con tema futurista Material 3 oscuro/neón.
+- Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
 
-Los datos se guardan en el dispositivo. El siguiente bloque podrá añadir historial
-mensual, ajustes de reacciones y medios personales; los minijuegos quedan fuera del
-primer MVP.
+Los datos se guardan en el dispositivo. El historial previo del MVP se conserva; los
+sábados y domingos dejan de mostrarse y no se incluyen en los totales laborales.
+Login y cifrado siguen fuera de alcance; minijuegos e incorporación de medios
+personales pueden hacerse en iteraciones posteriores.
 
 ## Requisitos
 
@@ -47,28 +50,28 @@ Si el wrapper no tiene permiso de ejecución en el entorno, usa:
 bash gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Las pruebas unitarias cubren los límites del cálculo semanal, formato de duración,
-sumas y el límite inferior de cero. La compilación comprueba la integración de Room y
-Compose.
+Las pruebas unitarias cubren días laborables, límites de los mensajes semanales,
+formato de duración, sumas y el límite inferior de cero. La compilación comprueba la
+integración de Room y Compose.
 
 ## Pruebas manuales en emulador o dispositivo
 
-1. En una instalación nueva, confirma que Inicio muestra `0 min` y que `−30 min` está desactivado.
-2. Pulsa `+30 min`: el contador diario y el total semanal deben mostrar `30 min` y aparecer una frase.
+1. Confirma que la app abre en el tema oscuro/neón y que Inicio muestra el estado de turno.
+2. En un día laborable, pulsa `+30 min`: el contador debe temblar, destellar en rojo brevemente, actualizar el total y mostrar una frase.
 3. Pulsa «Deshacer» en el mensaje: ambos totales vuelven al valor previo.
-4. Resta 30 minutos: ambos totales vuelven a cero; no es posible obtener un saldo negativo.
-5. En Ajustes, selecciona `15 min`, vuelve a Inicio y confirma que el botón suma 15 minutos.
-6. Cierra la aplicación desde Recientes y vuelve a abrirla: el total del día y el ajuste deben mantenerse.
-7. En Historial, confirma que la semana empieza en lunes, navega a la anterior y vuelve a la actual.
-8. Añade o resta tiempo en un día pasado: el valor diario y el total semanal deben actualizarse.
-9. Comprueba que no se puede navegar a semanas futuras ni editar fechas futuras.
-10. Repite una suma/resta tras cambiar la fecha del sistema a otro día y confirma que cada día conserva su propio total.
+4. Resta tiempo hasta cero y confirma que no puede quedar un saldo negativo.
+5. En Historial, confirma que aparecen exactamente lunes, martes, miércoles, jueves y viernes; no deben aparecer sábado ni domingo.
+6. Cambia el total semanal a 119, 120, 300 y 301 minutos y confirma que la frase cambia en los umbrales de 2 h y 5 h.
+7. Prueba la navegación a semanas anteriores, la edición de un día pasado y que no se puede editar fechas futuras.
+8. En Ajustes, cambia el enfado y la probabilidad de cerveza con las barras; confirma que la barra de amor permanece al 100 % y no se puede mover.
+9. Selecciona `15 min`, cierra la app y ábrela de nuevo; tanto el intervalo como las barras deben conservar sus valores.
+10. Simula sábado y domingo cambiando la fecha del emulador: el contador debe indicar descanso y los botones de suma/resta deben quedar desactivados.
 
 ## Estructura
 
 - `data/local`: entidad, DAO y base de datos Room.
 - `data/repository`: acceso a los registros locales.
-- `domain`: reglas de calendario y presentación de duración.
+- `domain`: reglas de calendario laboral, umbrales y presentación de duración.
 - `ui`: estado compartido y pantallas de Inicio, Historial y Ajustes.
 - `navigation`: navegación inferior.
 - `ui/theme`: tema Material 3 personalizado.
