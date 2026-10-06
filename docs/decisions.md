@@ -8,12 +8,13 @@
   totales. La fecha se almacena como ISO (`YYYY-MM-DD`) para que los periodos semanales
   se consulten sin conversiones de zona horaria.
 - **Edición:** sumar/restar usa el intervalo configurado (15, 30 o 60 minutos); el
-  mínimo es cero. Los cambios desde Inicio se pueden deshacer.
+  mínimo es cero. Inicio no muestra avisos flotantes tras los cambios.
 - **Preferencias:** el intervalo, el medidor de enfado y la probabilidad de cerveza se
   guardan en preferencias privadas de la aplicación. El medidor del amor es fijo al
   100 % y no es interactivo.
-- **Reacción visual:** al incrementar, el contador muestra una breve explosión de
-  partículas de colores; no se usa vibración física ni permisos del dispositivo.
+- **Reacción visual y sonora:** al incrementar, el contador se tiñe brevemente y
+  expulsa vapor por los laterales. Un efecto de tren a vapor original se reproduce
+  sin permisos de audio ni recursos de terceros.
 - **Fondo:** cuadrícula futurista y órbitas de luz con movimiento lento y continuo,
   usando Canvas de Compose sin recursos externos.
 - **Medidor de amor:** el usuario puede arrastrar el marcador como broma. Al soltarlo,
@@ -22,16 +23,17 @@
   de 300 minutos.
 - **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
 - **Fuera de alcance explícito:** login, pantalla de acceso, cifrado de datos,
-  autenticación biométrica, recursos personales (audio/foto/GIF), minijuegos,
-  sincronización en la nube y publicación en Google Play.
+  autenticación biométrica, sincronización en la nube y publicación en Google Play.
+  El minijuego de canciones está aprobado, pero requiere acordar el método de
+  reproducción de Spotify y recibir la lista compartida antes de implementarlo.
 - **Privacidad actual:** la app no requiere conexión de red para registrar ni consultar
   horas. Los datos no se sincronizan con un servidor.
 
 ## Verificación funcional mínima
 
 En Android Studio, ejecutar `:app:testDebugUnitTest` y `:app:assembleDebug`. Después,
-probar manualmente la explosión de partículas al sumar, suma, resta sin saldo negativo,
-deshacer, persistencia tras cerrar la aplicación, cambios de medidores, que los días
+probar manualmente el efecto de vapor y sonido al sumar, suma, resta sin saldo negativo,
+persistencia tras cerrar la aplicación, cambios de medidores, que los días
 del historial sean solo laborables, los umbrales de mensajes semanales, navegación
 semanal, la vuelta animada del medidor de amor al 100 % y edición de días pasados en
 un emulador o dispositivo API 26+.

@@ -12,8 +12,6 @@
     <string name="week_total_hint">Acumulado desde el lunes</string>
     <string name="counter_reassurance">Recuerda que vivir es más importante que el trabajo. Te quiero.</string>
     <string name="weekend_counter_message">Modo descanso activado. El contador vuelve el lunes; hoy no fichamos.</string>
-    <string name="time_removed_message">Tiempo corregido</string>
-    <string name="undo_action">Deshacer</string>
     <string name="history_title">Tu historial</string>
     <string name="week_of_label">Semana</string>
     <string name="previous_week">Semana anterior</string>
@@ -40,11 +38,5 @@
     <string name="workdays_only_hint">Solo días laborables · lunes a viernes</string>
     <string name="weekly_message_under_two">Muy bien mi niña, a trabajar lo justo y necesario para pagarte las cervezas.</string>
     <string name="weekly_message_two_to_five">Guapaaaaaa recuerda que puedes dejar trabajo acumulado para la siguiente coordinadora.</string>
-    <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!!STOP WORKING¡¡¡¡¡</string>
-    <string-array name="reaction_messages">
-        <item>¡Ese reloj te debe una!</item>
-        <item>Una más para la hucha del descanso.</item>
-        <item>Apuntado. Que conste en acta.</item>
-        <item>Otro minuto más cerca de la cerveza.</item>
-    </string-array>
+    <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!STOP WORKING!!!!!</string>
 </resources>

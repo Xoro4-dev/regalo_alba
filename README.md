@@ -8,13 +8,14 @@ acceso ni cifrado de datos.
 
 - Contador diario con botones para sumar o restar minutos.
 - Intervalo configurable de 15, 30 o 60 minutos; comienza en 30 minutos.
-- Saldo diario nunca negativo y acción «Deshacer» después de un cambio.
+- Saldo diario nunca negativo, con corrección directa desde el contador y el historial.
 - Total de la semana laboral, de lunes a viernes; sábados y domingos no se registran.
 - Historial semanal con navegación a semanas anteriores y corrección de días.
-- Reacción al sumar tiempo: explosión breve de partículas de colores y frase humorística.
+- Reacción al sumar tiempo: vapor que sale por los laterales del contador y un breve sonido de tren a vapor.
 - Ajustes con medidor de enfado y probabilidad de cerveza; medidor del amor fijo al 100 %.
 - Persistencia local con Room y preferencias locales para el intervalo y medidores.
 - Interfaz en español con tema futurista Material 3 oscuro/neón, fondo animado sutil de cuadrícula, órbitas y luces difuminadas.
+- Al sumar tiempo, el contador se tiñe brevemente y expulsa vapor por los laterales con un efecto sonoro original tipo tren a vapor; no aparecen avisos flotantes.
 - Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
 
 Los datos se guardan en el dispositivo. El historial previo del MVP se conserva; los
@@ -57,8 +58,8 @@ integración de Room y Compose.
 ## Pruebas manuales en emulador o dispositivo
 
 1. Confirma que la app abre en el tema oscuro/neón con una cuadrícula y luces de fondo que se mueven lentamente.
-2. En un día laborable, pulsa `+30 min`: debe aparecer una explosión breve de partículas alrededor del contador, actualizarse el total y mostrarse una frase.
-3. Pulsa «Deshacer» en el mensaje: ambos totales vuelven al valor previo.
+2. En un día laborable, pulsa `+30 min`: debe salir vapor por los laterales del contador, sonar un breve «chu-chu» y actualizarse el total sin mostrar avisos en la parte inferior.
+3. Resta tiempo desde el botón `−30 min` y confirma que el total se actualiza sin mostrar avisos.
 4. Resta tiempo hasta cero y confirma que no puede quedar un saldo negativo.
 5. En Historial, confirma que aparecen exactamente lunes, martes, miércoles, jueves y viernes; no deben aparecer sábado ni domingo.
 6. Cambia el total semanal a 119, 120, 300 y 301 minutos y confirma que la frase cambia en los umbrales de 2 h y 5 h.

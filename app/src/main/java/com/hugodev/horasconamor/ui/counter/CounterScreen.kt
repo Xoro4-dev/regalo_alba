@@ -1,13 +1,16 @@
 package com.hugodev.horasconamor.ui.counter
 
+import android.media.AudioAttributes
+import android.media.SoundPool
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,14 +32,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -44,7 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -59,44 +62,79 @@ import java.util.Locale
 fun CounterScreen(viewModel: OvertimeViewModel) {
     val summary by viewModel.todaySummary.collectAsState()
     val incrementMinutes by viewModel.incrementMinutes.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val reactionMessages = stringArrayResource(R.array.reaction_messages)
-    val removedMessage = stringResource(R.string.time_removed_message)
-    val undoLabel = stringResource(R.string.undo_action)
+    val context = LocalContext.current
+    val soundPool = remember(context) {
+        SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build(),
+            )
+            .build()
+    }
+    var steamSoundId by remember { mutableIntStateOf(0) }
+    var isSteamSoundLoaded by remember { mutableStateOf(false) }
     val weekendMessage = stringResource(R.string.weekend_counter_message)
     val spanishLocale = remember { Locale.forLanguageTag("es-ES") }
     val dateFormatter = remember {
         DateTimeFormatter.ofPattern("EEEE d 'de' MMMM", spanishLocale)
     }
     val isWorkday = OvertimeCalendar.isWorkday(summary.date)
-    val burstProgress = remember { Animatable(1f) }
+    val steamProgress = remember { Animatable(1f) }
     var reactionTrigger by remember { mutableIntStateOf(0) }
     val counterShape = RoundedCornerShape(32.dp)
     val counterColor = lerp(
         MaterialTheme.colorScheme.primaryContainer,
         MaterialTheme.colorScheme.tertiaryContainer,
-        1f - burstProgress.value,
+        1f - steamProgress.value,
     )
     val counterTextColor = lerp(
         MaterialTheme.colorScheme.onPrimaryContainer,
         MaterialTheme.colorScheme.tertiary,
-        (1f - burstProgress.value) * 0.9f,
+        (1f - steamProgress.value) * 0.9f,
     )
+
+    DisposableEffect(soundPool, context) {
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (sampleId == steamSoundId) {
+                isSteamSoundLoaded = status == 0
+                if (status != 0) {
+                    Log.e("CounterScreen", "Failed to load steam sound (status=$status)")
+                }
+            }
+        }
+        steamSoundId = soundPool.load(context, R.raw.steam_train_chu_chu, 1)
+        if (steamSoundId == 0) {
+            Log.e("CounterScreen", "SoundPool rejected the steam sound resource")
+        }
+        onDispose {
+            soundPool.release()
+        }
+    }
 
     LaunchedEffect(reactionTrigger) {
         if (reactionTrigger == 0) return@LaunchedEffect
-        burstProgress.snapTo(0f)
-        burstProgress.animateTo(
+        steamProgress.snapTo(0f)
+        steamProgress.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 850, easing = FastOutSlowInEasing),
+            animationSpec = tween(durationMillis = 1_500, easing = FastOutSlowInEasing),
         )
+    }
+
+    LaunchedEffect(reactionTrigger, isSteamSoundLoaded) {
+        if (reactionTrigger > 0 && isSteamSoundLoaded) {
+            if (soundPool.play(steamSoundId, 1f, 1f, 1, 0, 1f) == 0) {
+                Log.w("CounterScreen", "SoundPool could not start the steam sound")
+            }
+        }
     }
 
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { contentPadding ->
         Column(
             modifier = Modifier
@@ -120,110 +158,93 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
                 )
             }
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        BorderStroke(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.tertiary.copy(
-                                alpha = ((1f - burstProgress.value) * 0.85f).coerceIn(0f, 1f),
-                            ),
-                        ),
-                        counterShape,
-                    ),
-                shape = counterShape,
-                colors = CardDefaults.cardColors(containerColor = counterColor),
-            ) {
-                Column(
+            Box(Modifier.fillMaxWidth()) {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 28.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .border(
+                            BorderStroke(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.tertiary.copy(
+                                    alpha = ((1f - steamProgress.value) * 0.85f).coerceIn(0f, 1f),
+                                ),
+                            ),
+                            counterShape,
+                        ),
+                    shape = counterShape,
+                    colors = CardDefaults.cardColors(containerColor = counterColor),
                 ) {
-                    Text(
-                        text = stringResource(R.string.counter_status_label),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = counterTextColor.copy(alpha = 0.82f),
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(112.dp),
-                        contentAlignment = Alignment.Center,
+                            .padding(horizontal = 24.dp, vertical = 28.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Canvas(modifier = Modifier.fillMaxSize()) {
-                            drawHourBurst(burstProgress.value)
-                        }
                         Text(
-                            text = OvertimeCalendar.formatDuration(summary.todayMinutes),
-                            modifier = Modifier.offset(y = ((1f - burstProgress.value) * -5).dp),
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold,
-                            color = counterTextColor,
+                            text = stringResource(R.string.counter_status_label),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = counterTextColor.copy(alpha = 0.82f),
                         )
-                    }
-                    Spacer(Modifier.height(24.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        OutlinedButton(
+                        Spacer(Modifier.height(12.dp))
+                        Box(
                             modifier = Modifier
-                                .weight(1f)
-                                .height(60.dp),
-                            enabled = isWorkday && summary.todayMinutes > 0,
-                            onClick = {
-                                coroutineScope.launch {
-                                    val change = viewModel.adjustMinutes(summary.date, -incrementMinutes)
-                                    if (change != null) {
-                                        val result = snackbarHostState.showSnackbar(
-                                            message = removedMessage,
-                                            actionLabel = undoLabel,
-                                        )
-                                        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
-                                            viewModel.undo(change)
-                                        }
-                                    }
-                                }
-                            },
+                                .fillMaxWidth()
+                                .height(112.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
-                            Icon(Icons.Filled.Remove, contentDescription = null)
                             Text(
-                                text = stringResource(R.string.decrement_label, incrementMinutes),
-                                modifier = Modifier.padding(start = 6.dp),
+                                text = OvertimeCalendar.formatDuration(summary.todayMinutes),
+                                modifier = Modifier.offset(y = ((1f - steamProgress.value) * -5).dp),
+                                style = MaterialTheme.typography.displaySmall,
+                                fontWeight = FontWeight.Bold,
+                                color = counterTextColor,
                             )
                         }
-                        Button(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(60.dp),
-                            enabled = isWorkday,
-                            onClick = {
-                                coroutineScope.launch {
-                                    val change = viewModel.adjustMinutes(summary.date, incrementMinutes)
-                                    if (change != null) {
-                                        reactionTrigger += 1
-                                        val result = snackbarHostState.showSnackbar(
-                                            message = reactionMessages.random(),
-                                            actionLabel = undoLabel,
-                                        )
-                                        if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
-                                            viewModel.undo(change)
-                                        }
-                                    }
-
-                                }
-                            },
+                        Spacer(Modifier.height(24.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            Icon(Icons.Filled.Add, contentDescription = null)
-                            Text(
-                                text = stringResource(R.string.increment_label, incrementMinutes),
-                                modifier = Modifier.padding(start = 6.dp),
-                            )
+                            OutlinedButton(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(60.dp),
+                                enabled = isWorkday && summary.todayMinutes > 0,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.adjustMinutes(summary.date, -incrementMinutes)
+                                    }
+                                },
+                            ) {
+                                Icon(Icons.Filled.Remove, contentDescription = null)
+                                Text(
+                                    text = stringResource(R.string.decrement_label, incrementMinutes),
+                                    modifier = Modifier.padding(start = 6.dp),
+                                )
+                            }
+                            Button(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(60.dp),
+                                enabled = isWorkday,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        val change = viewModel.adjustMinutes(summary.date, incrementMinutes)
+                                        if (change != null) reactionTrigger += 1
+                                    }
+                                },
+                            ) {
+                                Icon(Icons.Filled.Add, contentDescription = null)
+                                Text(
+                                    text = stringResource(R.string.increment_label, incrementMinutes),
+                                    modifier = Modifier.padding(start = 6.dp),
+                                )
+                            }
                         }
                     }
+                }
+                Canvas(Modifier.matchParentSize()) {
+                    drawSteamVents(steamProgress.value)
                 }
             }
 
