@@ -10,8 +10,8 @@
 - **Edición:** sumar/restar usa el intervalo configurado (15, 30 o 60 minutos); el
   mínimo es cero. Inicio no muestra avisos flotantes tras los cambios.
 - **Preferencias:** el intervalo, el medidor de enfado y la probabilidad de cerveza se
-  guardan en preferencias privadas de la aplicación. El medidor del amor es fijo al
-  100 % y no es interactivo.
+  guardan en preferencias privadas de la aplicación. El medidor del amor se puede
+  mover como broma, rebota al 100 % y no se guarda.
 - **Reacción visual y sonora:** al incrementar, el contador se tiñe brevemente y
   expulsa vapor por los laterales. Un efecto de tren a vapor original se reproduce
   sin permisos de audio ni recursos de terceros.
@@ -22,10 +22,12 @@
 - **Mensajes semanales:** menos de 120 minutos, de 120 a 300 minutos inclusive y más
   de 300 minutos.
 - **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
+- **Minijuego:** plataformas 2D original dibujado con Canvas, sin recursos de terceros.
+  La protagonista tiene estética hippie, las cervezas son coleccionables y los
+  obstáculos consumen vidas; el nivel termina con victoria o al quedarse sin vidas.
+  No se usan personajes, arte, música ni niveles de franquicias existentes.
 - **Fuera de alcance explícito:** login, pantalla de acceso, cifrado de datos,
   autenticación biométrica, sincronización en la nube y publicación en Google Play.
-  El minijuego de canciones está aprobado, pero requiere acordar el método de
-  reproducción de Spotify y recibir la lista compartida antes de implementarlo.
 - **Privacidad actual:** la app no requiere conexión de red para registrar ni consultar
   horas. Los datos no se sincronizan con un servidor.
 
@@ -33,10 +35,10 @@
 
 En Android Studio, ejecutar `:app:testDebugUnitTest` y `:app:assembleDebug`. Después,
 probar manualmente el efecto de vapor y sonido al sumar, suma, resta sin saldo negativo,
-persistencia tras cerrar la aplicación, cambios de medidores, que los días
-del historial sean solo laborables, los umbrales de mensajes semanales, navegación
-semanal, la vuelta animada del medidor de amor al 100 % y edición de días pasados en
-un emulador o dispositivo API 26+.
+persistencia tras cerrar la aplicación, cambios de medidores, que los días del
+historial sean solo laborables, los umbrales de mensajes semanales, navegación semanal,
+la vuelta animada del medidor de amor al 100 %, edición de días pasados y una partida
+completa del minijuego en un emulador o dispositivo API 26+.
 
 ## Próximo bloque
 

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -25,12 +26,14 @@ import androidx.navigation.compose.rememberNavController
 import com.hugodev.horasconamor.R
 import com.hugodev.horasconamor.ui.OvertimeViewModel
 import com.hugodev.horasconamor.ui.counter.CounterScreen
+import com.hugodev.horasconamor.ui.game.PlatformGameScreen
 import com.hugodev.horasconamor.ui.history.HistoryScreen
 import com.hugodev.horasconamor.ui.settings.SettingsScreen
 
 private object AppRoute {
     const val Home = "home"
     const val History = "history"
+    const val Game = "game"
     const val Settings = "settings"
 }
 
@@ -43,6 +46,7 @@ private data class TopLevelDestination(
 private val destinations = listOf(
     TopLevelDestination(AppRoute.Home, R.string.navigation_home, Icons.Filled.Home),
     TopLevelDestination(AppRoute.History, R.string.navigation_history, Icons.Filled.History),
+    TopLevelDestination(AppRoute.Game, R.string.navigation_game, Icons.Filled.SportsEsports),
     TopLevelDestination(AppRoute.Settings, R.string.navigation_settings, Icons.Filled.Settings),
 )
 
@@ -89,6 +93,7 @@ fun AppNavigation(viewModel: OvertimeViewModel) {
         ) {
             composable(AppRoute.Home) { CounterScreen(viewModel) }
             composable(AppRoute.History) { HistoryScreen(viewModel) }
+            composable(AppRoute.Game) { PlatformGameScreen() }
             composable(AppRoute.Settings) { SettingsScreen(viewModel) }
         }
     }
