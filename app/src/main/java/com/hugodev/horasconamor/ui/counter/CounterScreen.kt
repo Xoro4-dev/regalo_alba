@@ -1,10 +1,12 @@
 package com.hugodev.horasconamor.ui.counter
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -67,46 +70,32 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
         DateTimeFormatter.ofPattern("EEEE d 'de' MMMM", spanishLocale)
     }
     val isWorkday = OvertimeCalendar.isWorkday(summary.date)
-    val shakeOffset = remember { Animatable(0f) }
-    val alarmFlash = remember { Animatable(0f) }
+    val burstProgress = remember { Animatable(1f) }
     var reactionTrigger by remember { mutableIntStateOf(0) }
     val counterShape = RoundedCornerShape(32.dp)
     val counterColor = lerp(
         MaterialTheme.colorScheme.primaryContainer,
         MaterialTheme.colorScheme.tertiaryContainer,
-        alarmFlash.value,
+        1f - burstProgress.value,
     )
     val counterTextColor = lerp(
         MaterialTheme.colorScheme.onPrimaryContainer,
         MaterialTheme.colorScheme.tertiary,
-        alarmFlash.value,
+        (1f - burstProgress.value) * 0.9f,
     )
 
     LaunchedEffect(reactionTrigger) {
         if (reactionTrigger == 0) return@LaunchedEffect
-        alarmFlash.snapTo(1f)
-        launch {
-            shakeOffset.animateTo(
-                targetValue = 0f,
-                animationSpec = keyframes {
-                    durationMillis = 520
-                    0f at 0
-                    -12f at 70
-                    12f at 140
-                    -9f at 210
-                    9f at 280
-                    -5f at 350
-                    5f at 420
-                    0f at 520
-                },
-            )
-        }
-        launch {
-            alarmFlash.animateTo(0f, animationSpec = tween(durationMillis = 900))
-        }
+        burstProgress.snapTo(0f)
+        burstProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 850, easing = FastOutSlowInEasing),
+        )
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { contentPadding ->
         Column(
@@ -120,8 +109,9 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = stringResource(R.string.home_greeting),
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
                     text = summary.date.format(dateFormatter).replaceFirstChar { it.titlecase(spanishLocale) },
@@ -133,11 +123,12 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(x = shakeOffset.value.dp)
                     .border(
                         BorderStroke(
                             width = 1.dp,
-                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = alarmFlash.value),
+                            color = MaterialTheme.colorScheme.tertiary.copy(
+                                alpha = ((1f - burstProgress.value) * 0.85f).coerceIn(0f, 1f),
+                            ),
                         ),
                         counterShape,
                     ),
@@ -156,12 +147,23 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
                         color = counterTextColor.copy(alpha = 0.82f),
                     )
                     Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = OvertimeCalendar.formatDuration(summary.todayMinutes),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = counterTextColor,
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(112.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            drawHourBurst(burstProgress.value)
+                        }
+                        Text(
+                            text = OvertimeCalendar.formatDuration(summary.todayMinutes),
+                            modifier = Modifier.offset(y = ((1f - burstProgress.value) * -5).dp),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                            color = counterTextColor,
+                        )
+                    }
                     Spacer(Modifier.height(24.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -211,6 +213,7 @@ fun CounterScreen(viewModel: OvertimeViewModel) {
                                             viewModel.undo(change)
                                         }
                                     }
+
                                 }
                             },
                         ) {

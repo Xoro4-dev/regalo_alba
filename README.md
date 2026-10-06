@@ -11,10 +11,10 @@ acceso ni cifrado de datos.
 - Saldo diario nunca negativo y acción «Deshacer» después de un cambio.
 - Total de la semana laboral, de lunes a viernes; sábados y domingos no se registran.
 - Historial semanal con navegación a semanas anteriores y corrección de días.
-- Reacción al sumar tiempo: sacudida breve, destello rojo y frase humorística.
+- Reacción al sumar tiempo: explosión breve de partículas de colores y frase humorística.
 - Ajustes con medidor de enfado y probabilidad de cerveza; medidor del amor fijo al 100 %.
 - Persistencia local con Room y preferencias locales para el intervalo y medidores.
-- Interfaz en español con tema futurista Material 3 oscuro/neón.
+- Interfaz en español con tema futurista Material 3 oscuro/neón, fondo animado sutil de cuadrícula, órbitas y luces difuminadas.
 - Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
 
 Los datos se guardan en el dispositivo. El historial previo del MVP se conserva; los
@@ -56,14 +56,14 @@ integración de Room y Compose.
 
 ## Pruebas manuales en emulador o dispositivo
 
-1. Confirma que la app abre en el tema oscuro/neón y que Inicio muestra el estado de turno.
-2. En un día laborable, pulsa `+30 min`: el contador debe temblar, destellar en rojo brevemente, actualizar el total y mostrar una frase.
+1. Confirma que la app abre en el tema oscuro/neón con una cuadrícula y luces de fondo que se mueven lentamente.
+2. En un día laborable, pulsa `+30 min`: debe aparecer una explosión breve de partículas alrededor del contador, actualizarse el total y mostrarse una frase.
 3. Pulsa «Deshacer» en el mensaje: ambos totales vuelven al valor previo.
 4. Resta tiempo hasta cero y confirma que no puede quedar un saldo negativo.
 5. En Historial, confirma que aparecen exactamente lunes, martes, miércoles, jueves y viernes; no deben aparecer sábado ni domingo.
 6. Cambia el total semanal a 119, 120, 300 y 301 minutos y confirma que la frase cambia en los umbrales de 2 h y 5 h.
 7. Prueba la navegación a semanas anteriores, la edición de un día pasado y que no se puede editar fechas futuras.
-8. En Ajustes, cambia el enfado y la probabilidad de cerveza con las barras; confirma que la barra de amor permanece al 100 % y no se puede mover.
+8. En Ajustes, cambia el enfado y la probabilidad de cerveza con las barras; mueve la barra del amor y suéltala: debe rebotar de vuelta al 100 %.
 9. Selecciona `15 min`, cierra la app y ábrela de nuevo; tanto el intervalo como las barras deben conservar sus valores.
 10. Simula sábado y domingo cambiando la fecha del emulador: el contador debe indicar descanso y los botones de suma/resta deben quedar desactivados.
 

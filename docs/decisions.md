@@ -12,8 +12,12 @@
 - **Preferencias:** el intervalo, el medidor de enfado y la probabilidad de cerveza se
   guardan en preferencias privadas de la aplicación. El medidor del amor es fijo al
   100 % y no es interactivo.
-- **Reacción visual:** al incrementar, el contador vibra visualmente con un breve
-  temblor y un destello rojo; no se usa vibración física ni permisos del dispositivo.
+- **Reacción visual:** al incrementar, el contador muestra una breve explosión de
+  partículas de colores; no se usa vibración física ni permisos del dispositivo.
+- **Fondo:** cuadrícula futurista y órbitas de luz con movimiento lento y continuo,
+  usando Canvas de Compose sin recursos externos.
+- **Medidor de amor:** el usuario puede arrastrar el marcador como broma. Al soltarlo,
+  rebota con animación de muelle hacia el 100 %; el valor es temporal y no se guarda.
 - **Mensajes semanales:** menos de 120 minutos, de 120 a 300 minutos inclusive y más
   de 300 minutos.
 - **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
@@ -26,10 +30,11 @@
 ## Verificación funcional mínima
 
 En Android Studio, ejecutar `:app:testDebugUnitTest` y `:app:assembleDebug`. Después,
-probar manualmente el temblor/destello al sumar, suma, resta sin saldo negativo,
+probar manualmente la explosión de partículas al sumar, suma, resta sin saldo negativo,
 deshacer, persistencia tras cerrar la aplicación, cambios de medidores, que los días
 del historial sean solo laborables, los umbrales de mensajes semanales, navegación
-semanal y edición de días pasados en un emulador o dispositivo API 26+.
+semanal, la vuelta animada del medidor de amor al 100 % y edición de días pasados en
+un emulador o dispositivo API 26+.
 
 ## Próximo bloque
 
