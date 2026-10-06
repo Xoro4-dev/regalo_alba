@@ -40,17 +40,17 @@
     <string name="weekly_message_under_two">Muy bien mi niña, a trabajar lo justo y necesario para pagarte las cervezas.</string>
     <string name="weekly_message_two_to_five">Guapaaaaaa recuerda que puedes dejar trabajo acumulado para la siguiente coordinadora.</string>
     <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!STOP WORKING!!!!!</string>
-    <string name="game_title">¡Hippie de guardia!</string>
-    <string name="game_subtitle">Salta, esquiva el curro y recoge cervezas.</string>
+    <string name="game_title">¡Misión: 50 cervezas!</string>
+    <string name="game_subtitle">Consigue 50 de las 70 cervezas. ¡Esquiva a los bichos!</string>
     <string name="game_beer_score">Cervezas: %1$d / %2$d</string>
     <string name="game_lives">Energía: %1$d</string>
-    <string name="game_controls_hint">Mantén ◀ o ▶ para moverte y pulsa SALTAR para brincar.</string>
+    <string name="game_controls_hint">Mantén ◀ o ▶ para correr. Salta por encima de plataformas y enemigos.</string>
     <string name="game_jump">SALTAR</string>
     <string name="game_move_left">Mover a la izquierda</string>
     <string name="game_move_right">Mover a la derecha</string>
-    <string name="game_won_title">¡Llegada a la quedada!</string>
-    <string name="game_won_message">Has conseguido %1$d cervezas. ¡La coordinadora hippie está orgullosa!</string>
-    <string name="game_over_title">¡El curro te ha pillado!</string>
-    <string name="game_over_message">Has reunido %1$d cervezas. Recarga energía y vuelve a intentarlo.</string>
+    <string name="game_won_title">¡50 cervezas conseguidas!</string>
+    <string name="game_won_message">Misión cumplida con %1$d cervezas. ¡La coordinadora hippie está orgullosa!</string>
+    <string name="game_over_title">¡Fin de la ruta!</string>
+    <string name="game_over_message">Has reunido %1$d de 50 cervezas. Esquiva a los bichos y vuelve a intentarlo.</string>
     <string name="game_restart">Volver a jugar</string>
 </resources>

@@ -115,7 +115,7 @@ fun PlatformGameScreen() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.game_beer_score, beerCount, PlatformGameEngine.BEER_COUNT),
+                text = stringResource(R.string.game_beer_score, beerCount, PlatformGameEngine.BEER_GOAL),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.tertiary,
@@ -277,18 +277,28 @@ private fun DrawScope.drawPlatformLevel(state: PlatformGameState, density: Float
     val viewportHeight = size.height / density
     val groundY = viewportHeight - 30f
     val scale = density
+    val zone = (state.playerX / 1_800f).toInt() % 3
+    val skyColors = listOf(
+        listOf(Color(0xFF171635), Color(0xFF523F72), Color(0xFFEF9E7C)),
+        listOf(Color(0xFF10253F), Color(0xFF386A86), Color(0xFFFFB879)),
+        listOf(Color(0xFF241738), Color(0xFF70496E), Color(0xFFFF9D91)),
+    )[zone]
 
     drawRect(
         brush = Brush.verticalGradient(
-            colors = listOf(Color(0xFF171635), Color(0xFF523F72), Color(0xFFEF9E7C)),
+            colors = skyColors,
             endY = size.height,
         ),
     )
     drawCircle(
         color = Color(0xFFFFD990).copy(alpha = 0.92f),
         radius = 34.dp.toPx(),
-        center = androidx.compose.ui.geometry.Offset(size.width * 0.78f, size.height * 0.2f),
+        center = androidx.compose.ui.geometry.Offset(
+            size.width * (0.72f + sin(state.elapsedSeconds * 0.12f) * 0.08f),
+            size.height * (0.2f + sin(state.elapsedSeconds * 0.28f) * 0.015f),
+        ),
     )
+    drawMovingClouds(state.elapsedSeconds, size.width, size.height)
     drawFarHill(size.width, size.height * 0.63f, Color(0xFF84709B))
     drawFarHill(size.width * 1.2f, size.height * 0.7f, Color(0xFF504D78))
 
@@ -326,27 +336,34 @@ private fun DrawScope.drawPlatformLevel(state: PlatformGameState, density: Float
             )
         }
 
-        PlatformGameEngine.hazards.forEach { hazard ->
-            val centerX = (hazard.x + hazard.width / 2f) * scale
-            val top = (groundY - hazard.height) * scale
-            drawRoundRect(
-                color = Color(0xFF474052),
-                topLeft = androidx.compose.ui.geometry.Offset(hazard.x * scale, top),
-                size = androidx.compose.ui.geometry.Size(hazard.width * scale, hazard.height * scale),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx()),
-            )
-            drawRoundRect(
-                color = Color(0xFFFFC467),
-                topLeft = androidx.compose.ui.geometry.Offset(centerX - 6.dp.toPx(), top - 5.dp.toPx()),
-                size = androidx.compose.ui.geometry.Size(12.dp.toPx(), 8.dp.toPx()),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(4.dp.toPx()),
-            )
-        }
-
         PlatformGameEngine.beers.forEachIndexed { index, beer ->
             if (index !in state.collectedBeers) {
-                drawBeer(beer.x * scale, (groundY - beer.height) * scale)
+                val screenX = beer.x * scale
+                val screenY = (groundY - beer.height) * scale
+                drawCircle(
+                    color = Color(0xFFFFD35F).copy(
+                        alpha = 0.12f + (sin(state.elapsedSeconds * 3f + index) + 1f) * 0.1f,
+                    ),
+                    radius = 18.dp.toPx(),
+                    center = androidx.compose.ui.geometry.Offset(screenX, screenY),
+                )
+                drawBeer(screenX, screenY)
             }
+        }
+
+        PlatformGameEngine.enemies.forEach { enemy ->
+            val position = enemy.positionAt(state.elapsedSeconds)
+            drawEnemy(enemy, position, groundY, scale, state.elapsedSeconds)
+        }
+
+        val firstDecoration = (state.cameraX / 320f).toInt()
+        val visibleDecorations = (size.width / (320f * scale)).toInt() + 3
+        for (index in firstDecoration..firstDecoration + visibleDecorations) {
+            drawDaisy(
+                (index * 320f + 150f) * scale,
+                groundY * scale - 13.dp.toPx(),
+                5.dp.toPx(),
+            )
         }
 
         drawHippieGirl(
@@ -360,6 +377,27 @@ private fun DrawScope.drawPlatformLevel(state: PlatformGameState, density: Float
     drawDaisy(size.width - 34.dp.toPx(), groundY * scale - 13.dp.toPx(), 5.dp.toPx())
 }
 
+private fun DrawScope.drawMovingClouds(elapsedSeconds: Float, width: Float, height: Float) {
+    val cloudWidth = 94.dp.toPx()
+    repeat(5) { index ->
+        val trackWidth = width + cloudWidth
+        val rawX = (index * width * 0.29f - elapsedSeconds * (10f + index * 2f)) % trackWidth
+        val x = if (rawX < -cloudWidth) rawX + trackWidth else rawX
+        val y = height * (0.16f + (index % 3) * 0.08f)
+        val puff = 12.dp.toPx()
+        val cloudColor = Color(0xFFFFF0E8).copy(alpha = 0.16f + (index % 2) * 0.06f)
+        drawCircle(cloudColor, puff, androidx.compose.ui.geometry.Offset(x, y))
+        drawCircle(cloudColor, puff * 0.78f, androidx.compose.ui.geometry.Offset(x + puff, y - puff * 0.35f))
+        drawCircle(cloudColor, puff * 0.9f, androidx.compose.ui.geometry.Offset(x + puff * 1.8f, y))
+        drawRoundRect(
+            color = cloudColor,
+            topLeft = androidx.compose.ui.geometry.Offset(x - puff * 0.25f, y - puff * 0.3f),
+            size = androidx.compose.ui.geometry.Size(puff * 2.3f, puff * 0.8f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(puff),
+        )
+    }
+}
+
 private fun DrawScope.drawFarHill(width: Float, y: Float, color: Color) {
     val path = Path().apply {
         moveTo(0f, y)
@@ -370,6 +408,72 @@ private fun DrawScope.drawFarHill(width: Float, y: Float, color: Color) {
         close()
     }
     drawPath(path, color)
+}
+
+private fun DrawScope.drawEnemy(
+    enemy: EnemyPlacement,
+    position: EnemyPosition,
+    groundY: Float,
+    scale: Float,
+    elapsedSeconds: Float,
+) {
+    val center = androidx.compose.ui.geometry.Offset(
+        position.x * scale,
+        (groundY - position.altitude - enemy.height / 2f) * scale,
+    )
+    val bodyWidth = enemy.width * scale
+    val bodyHeight = enemy.height * scale
+    if (enemy.isFlying) {
+        val wingOffset = sin(elapsedSeconds * 14f + enemy.phase) * 4.dp.toPx()
+        drawOval(
+            color = Color(0xFFFFE6F0).copy(alpha = 0.85f),
+            topLeft = androidx.compose.ui.geometry.Offset(center.x - bodyWidth * 0.36f, center.y - bodyHeight * 0.75f + wingOffset),
+            size = androidx.compose.ui.geometry.Size(bodyWidth * 0.48f, bodyHeight * 0.55f),
+        )
+        drawOval(
+            color = Color(0xFFFFE6F0).copy(alpha = 0.85f),
+            topLeft = androidx.compose.ui.geometry.Offset(center.x - bodyWidth * 0.05f, center.y - bodyHeight * 0.75f - wingOffset),
+            size = androidx.compose.ui.geometry.Size(bodyWidth * 0.48f, bodyHeight * 0.55f),
+        )
+        drawOval(
+            color = Color(0xFFEBC34E),
+            topLeft = androidx.compose.ui.geometry.Offset(center.x - bodyWidth / 2f, center.y - bodyHeight / 2f),
+            size = androidx.compose.ui.geometry.Size(bodyWidth, bodyHeight),
+        )
+        drawLine(
+            color = Color(0xFF594126),
+            start = androidx.compose.ui.geometry.Offset(center.x, center.y - bodyHeight / 2f),
+            end = androidx.compose.ui.geometry.Offset(center.x, center.y + bodyHeight / 2f),
+            strokeWidth = 4.dp.toPx(),
+        )
+    } else {
+        drawRoundRect(
+            color = Color(0xFFB64F66),
+            topLeft = androidx.compose.ui.geometry.Offset(center.x - bodyWidth / 2f, center.y - bodyHeight / 2f),
+            size = androidx.compose.ui.geometry.Size(bodyWidth, bodyHeight),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(bodyHeight / 2f),
+        )
+        repeat(3) { spike ->
+            val spikeX = center.x - bodyWidth * 0.25f + spike * bodyWidth * 0.25f
+            val path = Path().apply {
+                moveTo(spikeX - 4.dp.toPx(), center.y - bodyHeight * 0.35f)
+                lineTo(spikeX, center.y - bodyHeight * 0.8f)
+                lineTo(spikeX + 4.dp.toPx(), center.y - bodyHeight * 0.35f)
+                close()
+            }
+            drawPath(path, Color(0xFF743B5A))
+        }
+    }
+    drawCircle(
+        color = Color.White,
+        radius = 2.5.dp.toPx(),
+        center = androidx.compose.ui.geometry.Offset(center.x + bodyWidth * 0.18f, center.y - 2.dp.toPx()),
+    )
+    drawCircle(
+        color = Color(0xFF38283D),
+        radius = 1.2.dp.toPx(),
+        center = androidx.compose.ui.geometry.Offset(center.x + bodyWidth * 0.2f, center.y - 2.dp.toPx()),
+    )
 }
 
 private fun DrawScope.drawBeer(x: Float, centerY: Float) {

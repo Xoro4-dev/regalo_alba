@@ -36,11 +36,11 @@ class PlatformGameEngineTest {
     }
 
     @Test
-    fun collidingWithHazardConsumesOneLife() {
+    fun collidingWithEnemyConsumesOneLife() {
         val engine = PlatformGameEngine()
         engine.holdDirection(1)
 
-        repeat(30) {
+        repeat(28) {
             engine.advance(0.05f, viewportWidth = 360f)
         }
 
@@ -49,30 +49,54 @@ class PlatformGameEngineTest {
     }
 
     @Test
-    fun jumpingOverHazardsCanReachTheFinish() {
+    fun enemiesMoveAcrossTheLevel() {
+        val enemy = PlatformGameEngine.enemies.first()
+
+        assertTrue(enemy.positionAt(0f).x != enemy.positionAt(1f).x)
+    }
+
+    @Test
+    fun jumpingOverAnEnemyAvoidsDamage() {
         val engine = PlatformGameEngine()
         engine.holdDirection(1)
-        val damagePositions = mutableListOf<Float>()
-        var previousLives = engine.state.lives
+        repeat(16) {
+            engine.advance(0.05f, viewportWidth = 360f)
+        }
 
-        repeat(1_000) {
-            val nextHazard = PlatformGameEngine.hazards.firstOrNull {
-                it.x + it.width >= engine.state.playerX
-            }
-            if (nextHazard != null &&
-                nextHazard.x - engine.state.playerX < 85f &&
+        engine.jump()
+        repeat(14) {
+            engine.advance(0.05f, viewportWidth = 360f)
+        }
+
+        assertEquals(PlatformGameEngine.STARTING_LIVES, engine.state.lives)
+    }
+
+    @Test
+    fun collectingFiftyBeersWins() {
+        val engine = PlatformGameEngine(enemiesInLevel = emptyList())
+        engine.holdDirection(1)
+
+        for (frame in 0 until 5_000) {
+            val nextRaisedBeer = PlatformGameEngine.beers
+                .withIndex()
+                .filter { (index, beer) ->
+                    index !in engine.state.collectedBeers &&
+                        beer.height > 18f &&
+                        beer.x >= engine.state.playerX
+                }
+                .minByOrNull { (_, beer) -> beer.x }
+            if (nextRaisedBeer != null &&
+                nextRaisedBeer.value.x - engine.state.playerX < 140f &&
                 engine.state.isGrounded
             ) {
                 engine.jump()
             }
             engine.advance(0.05f, viewportWidth = 360f)
-            if (engine.state.lives < previousLives) {
-                damagePositions += engine.state.playerX
-                previousLives = engine.state.lives
-            }
+            if (engine.state.isWon || engine.state.isGameOver) break
         }
 
-        assertTrue("Final state: ${engine.state}; damage at $damagePositions", engine.state.isWon)
+        assertTrue("Final state: ${engine.state}", engine.state.isWon)
+        assertEquals(PlatformGameEngine.BEER_GOAL, engine.state.collectedBeers.size)
         assertTrue(engine.state.lives > 0)
     }
 

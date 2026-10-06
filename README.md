@@ -16,7 +16,7 @@ acceso ni cifrado de datos.
 - Interfaz en español con tema futurista Material 3 oscuro/neón, fondo animado sutil de cuadrícula, órbitas y luces difuminadas.
 - Al sumar tiempo, el contador se tiñe brevemente y expulsa vapor por los laterales con un efecto sonoro original tipo tren a vapor; no aparecen avisos flotantes.
 - Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
-- Minijuego de plataformas 2D original: protagonista hippie, cervezas coleccionables, obstáculos, saltos, vidas y final de nivel.
+- Minijuego de plataformas 2D original: recoge 50 cervezas entre 70 disponibles, salta plataformas y esquiva enemigos que patrullan y vuelan por un escenario largo con cambios de paisaje.
 
 Los datos del contador se guardan en el dispositivo. El historial previo del MVP se
 conserva; los sábados y domingos dejan de mostrarse y no se incluyen en los totales
@@ -52,8 +52,8 @@ bash gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
 Las pruebas unitarias cubren días laborables, límites de los mensajes semanales,
-formato de duración, sumas, el límite inferior de cero y las reglas del minijuego
-(salto, coleccionables, colisiones, victoria y reinicio).
+formato de duración, sumas, el límite inferior de cero y las reglas del minijuego (salto, coleccionables, enemigos móviles, colisiones,
+objetivo de 50 cervezas, victoria y reinicio).
 
 ## Pruebas manuales en emulador o dispositivo
 
@@ -67,7 +67,7 @@ formato de duración, sumas, el límite inferior de cero y las reglas del miniju
 8. En Ajustes, cambia el enfado y la probabilidad de cerveza con las barras; mueve la barra del amor y suéltala: debe rebotar de vuelta al 100 %.
 9. Selecciona `15 min`, cierra la app y ábrela de nuevo; tanto el intervalo como las barras deben conservar sus valores.
 10. Simula sábado y domingo cambiando la fecha del emulador: el contador debe indicar descanso y los botones de suma/resta deben quedar desactivados.
-11. Abre **Minijuego**; mantén `▶` para avanzar y pulsa `SALTAR` para recoger cervezas y evitar los obstáculos. Confirma que cambian el marcador y las vidas, que se muestra la victoria al llegar al final, que perder todas las vidas termina la partida y que `Volver a jugar` reinicia el nivel.
+11. Abre **Minijuego**; mantén `▶` para avanzar, recoge 50 de las cervezas repartidas por el recorrido y pulsa `SALTAR` para aterrizar en plataformas o esquivar enemigos terrestres y voladores que se mueven. Confirma que cambian el marcador y las vidas, que 50 cervezas completan la misión, que perder las vidas o llegar al final sin 50 cervezas termina la partida y que `Volver a jugar` reinicia el nivel.
 
 ## Estructura
 
