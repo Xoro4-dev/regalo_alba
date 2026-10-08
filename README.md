@@ -16,12 +16,12 @@ acceso ni cifrado de datos.
 - Interfaz en español con tema futurista Material 3 oscuro/neón, fondo animado sutil de cuadrícula, órbitas y luces difuminadas.
 - Al sumar tiempo, el contador se tiñe brevemente y expulsa vapor por los laterales con un efecto sonoro original tipo tren a vapor; no aparecen avisos flotantes.
 - Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
-- Minijuego de plataformas 2D original: recoge 50 cervezas entre 70 disponibles, salta plataformas y esquiva enemigos que patrullan y vuelan por un escenario largo con cambios de paisaje.
+- Minijuego de reflejos original: mueve una caja con el dedo para atrapar cervezas que caen del cielo. Cada captura suma un punto; las cervezas caen cada vez más rápido y la partida termina tras tres fallos.
 
 Los datos del contador se guardan en el dispositivo. El historial previo del MVP se
 conserva; los sábados y domingos dejan de mostrarse y no se incluyen en los totales
-laborales. Login y cifrado siguen fuera de alcance. El minijuego es independiente de
-Spotify y no necesita conexión ni medios externos.
+laborales. Login y cifrado siguen fuera de alcance. El minijuego no necesita conexión
+ni medios externos.
 
 ## Requisitos
 
@@ -52,8 +52,8 @@ bash gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
 Las pruebas unitarias cubren días laborables, límites de los mensajes semanales,
-formato de duración, sumas, el límite inferior de cero y las reglas del minijuego (salto, coleccionables, enemigos móviles, colisiones,
-objetivo de 50 cervezas, victoria y reinicio).
+formato de duración, sumas, el límite inferior de cero y las reglas del minijuego:
+movimiento de la caja, capturas, fallos y reinicio.
 
 ## Pruebas manuales en emulador o dispositivo
 
@@ -67,7 +67,7 @@ objetivo de 50 cervezas, victoria y reinicio).
 8. En Ajustes, cambia el enfado y la probabilidad de cerveza con las barras; mueve la barra del amor y suéltala: debe rebotar de vuelta al 100 %.
 9. Selecciona `15 min`, cierra la app y ábrela de nuevo; tanto el intervalo como las barras deben conservar sus valores.
 10. Simula sábado y domingo cambiando la fecha del emulador: el contador debe indicar descanso y los botones de suma/resta deben quedar desactivados.
-11. Abre **Minijuego**; mantén `▶` para avanzar, recoge 50 de las cervezas repartidas por el recorrido y pulsa `SALTAR` para aterrizar en plataformas o esquivar enemigos terrestres y voladores que se mueven. Confirma que cambian el marcador y las vidas, que 50 cervezas completan la misión, que perder las vidas o llegar al final sin 50 cervezas termina la partida y que `Volver a jugar` reinicia el nivel.
+11. Abre **Minijuego** y desliza la caja hacia los lados para atrapar las cervezas que caen. Confirma que cada captura suma un punto, que dejar caer tres cervezas termina la partida y que `Jugar otra vez` reinicia la puntuación.
 
 ## Estructura
 
@@ -75,6 +75,6 @@ objetivo de 50 cervezas, victoria y reinicio).
 - `data/repository`: acceso a los registros locales.
 - `domain`: reglas de calendario laboral, umbrales y presentación de duración.
 - `ui`: estado compartido y pantallas de Inicio, Historial y Ajustes.
-- `ui/game`: motor de juego de plataformas y dibujo vectorial original con Compose Canvas.
+- `ui/game`: motor de juego de atrapar cervezas y escena original dibujada con Compose Canvas.
 - `navigation`: navegación inferior.
 - `ui/theme`: tema Material 3 personalizado.

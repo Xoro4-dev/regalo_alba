@@ -22,12 +22,10 @@
 - **Mensajes semanales:** menos de 120 minutos, de 120 a 300 minutos inclusive y más
   de 300 minutos.
 - **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
-- **Minijuego:** plataformas 2D original dibujado con Canvas, sin recursos de terceros.
-  La protagonista tiene estética hippie y debe recoger 50 cervezas para ganar; hay
-  70 repartidas por un nivel largo con plataformas y enemigos terrestres y voladores
-  que patrullan. Los enemigos consumen vidas al tocar a la protagonista. El paisaje
-  cambia por zonas y tiene elementos móviles. No se usan personajes, arte, música ni
-  niveles de franquicias existentes.
+- **Minijuego:** juego original de atrapar objetos dibujado con Compose Canvas, sin
+  recursos de terceros. Cervezas caen desde la parte superior y se mueve una caja con
+  el dedo para atraparlas; cada captura suma un punto. El ritmo de caída y aparición
+  aumenta con la puntuación y la partida termina al dejar caer tres cervezas.
 - **Fuera de alcance explícito:** login, pantalla de acceso, cifrado de datos,
   autenticación biométrica, sincronización en la nube y publicación en Google Play.
 - **Privacidad actual:** la app no requiere conexión de red para registrar ni consultar
@@ -40,8 +38,8 @@ probar manualmente el efecto de vapor y sonido al sumar, suma, resta sin saldo n
 persistencia tras cerrar la aplicación, cambios de medidores, que los días del
 historial sean solo laborables, los umbrales de mensajes semanales, navegación semanal,
 la vuelta animada del medidor de amor al 100 %, edición de días pasados y una partida
-del minijuego en la que se esquiven enemigos móviles, se recojan 50 cervezas y se pruebe
-la derrota y el reinicio en un emulador o dispositivo API 26+.
+del minijuego en la que se atrapen cervezas con la caja, aumente la puntuación, se
+alcancen tres fallos y se pruebe el reinicio en un emulador o dispositivo API 26+.
 
 ## Próximo bloque
 

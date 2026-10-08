@@ -26,7 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import com.hugodev.horasconamor.R
 import com.hugodev.horasconamor.ui.OvertimeViewModel
 import com.hugodev.horasconamor.ui.counter.CounterScreen
-import com.hugodev.horasconamor.ui.game.PlatformGameScreen
+import com.hugodev.horasconamor.ui.game.BeerCatchScreen
 import com.hugodev.horasconamor.ui.history.HistoryScreen
 import com.hugodev.horasconamor.ui.settings.SettingsScreen
 
@@ -93,7 +93,7 @@ fun AppNavigation(viewModel: OvertimeViewModel) {
         ) {
             composable(AppRoute.Home) { CounterScreen(viewModel) }
             composable(AppRoute.History) { HistoryScreen(viewModel) }
-            composable(AppRoute.Game) { PlatformGameScreen() }
+            composable(AppRoute.Game) { BeerCatchScreen() }
             composable(AppRoute.Settings) { SettingsScreen(viewModel) }
         }
     }

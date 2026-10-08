@@ -40,17 +40,14 @@
     <string name="weekly_message_under_two">Muy bien mi niña, a trabajar lo justo y necesario para pagarte las cervezas.</string>
     <string name="weekly_message_two_to_five">Guapaaaaaa recuerda que puedes dejar trabajo acumulado para la siguiente coordinadora.</string>
     <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!STOP WORKING!!!!!</string>
-    <string name="game_title">¡Misión: 50 cervezas!</string>
-    <string name="game_subtitle">Consigue 50 de las 70 cervezas. ¡Esquiva a los bichos!</string>
-    <string name="game_beer_score">Cervezas: %1$d / %2$d</string>
-    <string name="game_lives">Energía: %1$d</string>
-    <string name="game_controls_hint">Mantén ◀ o ▶ para correr. Salta por encima de plataformas y enemigos.</string>
-    <string name="game_jump">SALTAR</string>
-    <string name="game_move_left">Mover a la izquierda</string>
-    <string name="game_move_right">Mover a la derecha</string>
-    <string name="game_won_title">¡50 cervezas conseguidas!</string>
-    <string name="game_won_message">Misión cumplida con %1$d cervezas. ¡La coordinadora hippie está orgullosa!</string>
-    <string name="game_over_title">¡Fin de la ruta!</string>
-    <string name="game_over_message">Has reunido %1$d de 50 cervezas. Esquiva a los bichos y vuelve a intentarlo.</string>
-    <string name="game_restart">Volver a jugar</string>
+    <string name="game_title">¡A por las cervezas!</string>
+    <string name="game_subtitle">Mueve la caja y atrapa todas las que puedas.</string>
+    <string name="game_score">Puntuación: %1$d</string>
+    <string name="game_miss_singular">cerveza perdida</string>
+    <string name="game_miss_plural">cervezas perdidas</string>
+    <string name="game_controls_hint">Desliza el dedo para mover la caja. Cada cerveza atrapada suma un punto.</string>
+    <string name="game_over_title">¡Se acabaron las cajas!</string>
+    <string name="game_over_message_singular">Has atrapado %1$d cerveza. ¡Intenta superar tu récord!</string>
+    <string name="game_over_message_plural">Has atrapado %1$d cervezas. ¡Intenta superar tu récord!</string>
+    <string name="game_restart">Jugar otra vez</string>
 </resources>
