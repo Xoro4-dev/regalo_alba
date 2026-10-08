@@ -23,9 +23,11 @@
   de 300 minutos.
 - **Tema:** estilo oscuro futurista con acentos neón como dirección visual por defecto.
 - **Minijuego:** juego original de atrapar objetos dibujado con Compose Canvas, sin
-  recursos de terceros. Cervezas caen desde la parte superior y se mueve una caja con
-  el dedo para atraparlas; cada captura suma un punto. El ritmo de caída y aparición
-  aumenta con la puntuación y la partida termina al dejar caer tres cervezas.
+  recursos de terceros. Latas caen desde la parte superior y se mueve una caja con
+  el dedo para atraparlas; cada captura suma un punto y las latas aceleran conforme
+  pasa el tiempo. Los cuatro diseños usan paletas inspiradas en cervezas conocidas
+  en España, con arte propio y sin reproducir logotipos o etiquetas de marca. La
+  partida termina al dejar caer tres latas.
 - **Fuera de alcance explícito:** login, pantalla de acceso, cifrado de datos,
   autenticación biométrica, sincronización en la nube y publicación en Google Play.
 - **Privacidad actual:** la app no requiere conexión de red para registrar ni consultar
@@ -38,8 +40,9 @@ probar manualmente el efecto de vapor y sonido al sumar, suma, resta sin saldo n
 persistencia tras cerrar la aplicación, cambios de medidores, que los días del
 historial sean solo laborables, los umbrales de mensajes semanales, navegación semanal,
 la vuelta animada del medidor de amor al 100 %, edición de días pasados y una partida
-del minijuego en la que se atrapen cervezas con la caja, aumente la puntuación, se
-alcancen tres fallos y se pruebe el reinicio en un emulador o dispositivo API 26+.
+del minijuego en la que se atrapen latas con la caja, aumente la velocidad con el
+tiempo, cambie la puntuación, se alcancen tres fallos y se pruebe el reinicio en un
+emulador o dispositivo API 26+.
 
 ## Próximo bloque
 

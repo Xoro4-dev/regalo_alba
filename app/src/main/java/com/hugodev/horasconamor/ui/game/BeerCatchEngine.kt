@@ -7,6 +7,7 @@ internal data class FallingBeer(
     val x: Float,
     val y: Float,
     val speed: Float,
+    val design: Int,
 )
 
 internal data class BeerCatchState(
@@ -42,8 +43,9 @@ internal class BeerCatchEngine {
         val catcherX = if (state.catcherX == 0f) width / 2f else state.catcherX
         spawnElapsed += delta
 
-        val fallingSpeed = (INITIAL_FALL_SPEED + state.score * SPEED_PER_POINT)
-            .coerceAtMost(MAX_FALL_SPEED)
+        val fallingSpeed = (
+            INITIAL_FALL_SPEED + elapsed * SPEED_PER_SECOND + state.score * SPEED_PER_POINT
+            ).coerceAtMost(MAX_FALL_SPEED)
         val spawnInterval = (INITIAL_SPAWN_INTERVAL - state.score * SPAWN_INTERVAL_REDUCTION)
             .coerceAtLeast(MIN_SPAWN_INTERVAL)
         val beers = state.beers.toMutableList()
@@ -62,13 +64,15 @@ internal class BeerCatchEngine {
                 x = x,
                 y = -BEER_HEIGHT,
                 speed = fallingSpeed,
+                design = id % CAN_DESIGN_COUNT,
             )
         }
 
         val catcherTop = height - CATCHER_BOTTOM_MARGIN - CATCHER_HEIGHT
         val remainingBeers = mutableListOf<FallingBeer>()
         beers.forEach { beer ->
-            val nextY = beer.y + beer.speed * delta
+            val speed = (beer.speed + SPEED_PER_SECOND * delta).coerceAtMost(MAX_FALL_SPEED)
+            val nextY = beer.y + speed * delta
             val reachesCatcher = nextY + BEER_HEIGHT >= catcherTop &&
                 nextY <= catcherTop + CATCHER_HEIGHT &&
                 abs(beer.x - catcherX) <= (CATCHER_WIDTH + BEER_WIDTH) / 2f
@@ -79,7 +83,7 @@ internal class BeerCatchEngine {
                     lastCaughtId = beer.id
                 }
                 nextY > height -> newMisses += 1
-                else -> remainingBeers += beer.copy(y = nextY)
+                else -> remainingBeers += beer.copy(y = nextY, speed = speed)
             }
         }
 
@@ -107,11 +111,13 @@ internal class BeerCatchEngine {
         const val BEER_WIDTH = 26f
         const val BEER_HEIGHT = 38f
         const val MAX_MISSES = 3
+        const val CAN_DESIGN_COUNT = 4
 
         private const val MAX_FRAME_SECONDS = 0.05f
-        private const val INITIAL_FALL_SPEED = 190f
+        private const val INITIAL_FALL_SPEED = 150f
+        private const val SPEED_PER_SECOND = 7.5f
         private const val SPEED_PER_POINT = 7f
-        private const val MAX_FALL_SPEED = 520f
+        private const val MAX_FALL_SPEED = 720f
         private const val INITIAL_SPAWN_INTERVAL = 1.3f
         private const val SPAWN_INTERVAL_REDUCTION = 0.012f
         private const val MIN_SPAWN_INTERVAL = 0.42f

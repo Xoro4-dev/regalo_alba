@@ -16,7 +16,7 @@ acceso ni cifrado de datos.
 - Interfaz en español con tema futurista Material 3 oscuro/neón, fondo animado sutil de cuadrícula, órbitas y luces difuminadas.
 - Al sumar tiempo, el contador se tiñe brevemente y expulsa vapor por los laterales con un efecto sonoro original tipo tren a vapor; no aparecen avisos flotantes.
 - Frases humorísticas de historial según el total semanal: menos de 2 h, de 2 a 5 h y más de 5 h.
-- Minijuego de reflejos original: mueve una caja con el dedo para atrapar cervezas que caen del cielo. Cada captura suma un punto; las cervezas caen cada vez más rápido y la partida termina tras tres fallos.
+- Minijuego de reflejos original: mueve una caja con el dedo para atrapar latas de cerveza que caen del cielo. Cada captura suma un punto; las latas aceleran con el tiempo y la partida termina tras tres fallos. Sus cuatro diseños usan paletas inspiradas en cervezas españolas, con ilustraciones originales sin logotipos ni etiquetas copiadas.
 
 Los datos del contador se guardan en el dispositivo. El historial previo del MVP se
 conserva; los sábados y domingos dejan de mostrarse y no se incluyen en los totales

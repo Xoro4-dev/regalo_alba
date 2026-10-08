@@ -249,12 +249,13 @@ private fun DrawScope.drawBeerCatchScene(state: BeerCatchState, density: Float) 
 
     state.beers.forEach { beer ->
         val center = androidx.compose.ui.geometry.Offset(beer.x * scale, beer.y * scale)
+        val palette = beerCanPalettes[beer.design]
         drawCircle(
-            color = Color(0xFFFFCE5B).copy(alpha = 0.18f),
+            color = palette.accent.copy(alpha = 0.18f),
             radius = 23.dp.toPx(),
             center = center,
         )
-        drawFallingBeer(center.x, center.y)
+        drawFallingBeer(center.x, center.y, beer.design)
     }
     drawCatchBasket(
         centerX = state.catcherX * scale,
@@ -326,30 +327,167 @@ private fun DrawScope.drawCatchHills(width: Float, height: Float) {
     }
 }
 
-private fun DrawScope.drawFallingBeer(x: Float, centerY: Float) {
-    val canWidth = 22.dp.toPx()
-    val canHeight = 34.dp.toPx()
+private data class BeerCanPalette(
+    val body: Color,
+    val label: Color,
+    val accent: Color,
+)
+
+private val beerCanPalettes = listOf(
+    BeerCanPalette(
+        body = Color(0xFF08734F),
+        label = Color(0xFFF3E8CA),
+        accent = Color(0xFFD8B450),
+    ),
+    BeerCanPalette(
+        body = Color(0xFFAD2938),
+        label = Color(0xFFF7EEE0),
+        accent = Color(0xFF263A63),
+    ),
+    BeerCanPalette(
+        body = Color(0xFFD9A62C),
+        label = Color(0xFFFFF2D0),
+        accent = Color(0xFF9D302C),
+    ),
+    BeerCanPalette(
+        body = Color(0xFFA95431),
+        label = Color(0xFFF4E2BF),
+        accent = Color(0xFF20564A),
+    ),
+)
+
+private fun DrawScope.drawFallingBeer(x: Float, centerY: Float, design: Int) {
+    val palette = beerCanPalettes[design]
+    val canWidth = 23.dp.toPx()
+    val canHeight = 35.dp.toPx()
+    val left = x - canWidth / 2f
+    val top = centerY - canHeight / 2f
+
     drawRoundRect(
-        color = Color(0xFFF3B83F),
-        topLeft = androidx.compose.ui.geometry.Offset(x - canWidth / 2f, centerY - canHeight / 2f),
+        brush = Brush.horizontalGradient(
+            colors = listOf(palette.body.copy(alpha = 0.72f), palette.body, palette.body.copy(alpha = 0.82f)),
+            startX = left,
+            endX = left + canWidth,
+        ),
+        topLeft = androidx.compose.ui.geometry.Offset(left, top),
         size = androidx.compose.ui.geometry.Size(canWidth, canHeight),
         cornerRadius = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx()),
     )
     drawRoundRect(
-        color = Color(0xFFFFE5A6),
-        topLeft = androidx.compose.ui.geometry.Offset(x - canWidth / 2f, centerY - canHeight / 2f),
-        size = androidx.compose.ui.geometry.Size(canWidth, 6.dp.toPx()),
-        cornerRadius = androidx.compose.ui.geometry.CornerRadius(4.dp.toPx()),
+        color = Color(0xFFD8D9D5),
+        topLeft = androidx.compose.ui.geometry.Offset(left + 1.dp.toPx(), top),
+        size = androidx.compose.ui.geometry.Size(canWidth - 2.dp.toPx(), 4.dp.toPx()),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()),
     )
-    drawRect(
-        color = Color(0xFFFFF4D5),
-        topLeft = androidx.compose.ui.geometry.Offset(x - 2.dp.toPx(), centerY - 5.dp.toPx()),
-        size = androidx.compose.ui.geometry.Size(4.dp.toPx(), 15.dp.toPx()),
+    drawRoundRect(
+        color = palette.label,
+        topLeft = androidx.compose.ui.geometry.Offset(left + 1.dp.toPx(), centerY - 5.dp.toPx()),
+        size = androidx.compose.ui.geometry.Size(canWidth - 2.dp.toPx(), 11.dp.toPx()),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()),
     )
+    drawRoundRect(
+        color = Color(0xFFD8D9D5),
+        topLeft = androidx.compose.ui.geometry.Offset(left + 1.dp.toPx(), top + canHeight - 4.dp.toPx()),
+        size = androidx.compose.ui.geometry.Size(canWidth - 2.dp.toPx(), 4.dp.toPx()),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx()),
+    )
+    when (design) {
+        0 -> drawHopMark(x, centerY, palette.accent)
+        1 -> drawShieldMark(x, centerY, palette.accent)
+        2 -> drawSunMark(x, centerY, palette.accent)
+        else -> drawLeafMark(x, centerY, palette.accent)
+    }
+    drawLine(
+        color = Color.White.copy(alpha = 0.28f),
+        start = androidx.compose.ui.geometry.Offset(left + 4.dp.toPx(), top + 7.dp.toPx()),
+        end = androidx.compose.ui.geometry.Offset(left + 4.dp.toPx(), top + canHeight - 7.dp.toPx()),
+        strokeWidth = 1.dp.toPx(),
+    )
+}
+
+private fun DrawScope.drawHopMark(x: Float, centerY: Float, color: Color) {
+    repeat(3) { petal ->
+        drawCircle(
+            color = color,
+            radius = 2.dp.toPx(),
+            center = androidx.compose.ui.geometry.Offset(
+                x + ((petal % 2) * 4 - 2).dp.toPx(),
+                centerY + ((petal / 2) * 4 - 2).dp.toPx(),
+            ),
+        )
+    }
+    drawLine(
+        color = color,
+        start = androidx.compose.ui.geometry.Offset(x, centerY - 6.dp.toPx()),
+        end = androidx.compose.ui.geometry.Offset(x, centerY + 6.dp.toPx()),
+        strokeWidth = 1.2.dp.toPx(),
+    )
+}
+
+private fun DrawScope.drawShieldMark(x: Float, centerY: Float, color: Color) {
+    val shield = Path().apply {
+        moveTo(x, centerY - 5.dp.toPx())
+        lineTo(x + 5.dp.toPx(), centerY - 2.dp.toPx())
+        lineTo(x + 4.dp.toPx(), centerY + 3.dp.toPx())
+        lineTo(x, centerY + 6.dp.toPx())
+        lineTo(x - 4.dp.toPx(), centerY + 3.dp.toPx())
+        lineTo(x - 5.dp.toPx(), centerY - 2.dp.toPx())
+        close()
+    }
+    drawPath(shield, color)
     drawCircle(
-        color = Color(0xFFFFE5A6),
-        radius = 2.dp.toPx(),
-        center = androidx.compose.ui.geometry.Offset(x, centerY + canHeight / 2f),
+        color = Color(0xFFAD2938),
+        radius = 1.5.dp.toPx(),
+        center = androidx.compose.ui.geometry.Offset(x, centerY),
+    )
+}
+
+private fun DrawScope.drawSunMark(x: Float, centerY: Float, color: Color) {
+    drawCircle(
+        color = color,
+        radius = 3.dp.toPx(),
+        center = androidx.compose.ui.geometry.Offset(x, centerY),
+    )
+    repeat(8) { ray ->
+        val angle = ray * (2f * PI.toFloat() / 8f)
+        val inner = 5.dp.toPx()
+        val outer = 7.dp.toPx()
+        drawLine(
+            color = color,
+            start = androidx.compose.ui.geometry.Offset(
+                x + sin(angle) * inner,
+                centerY + kotlin.math.cos(angle) * inner,
+            ),
+            end = androidx.compose.ui.geometry.Offset(
+                x + sin(angle) * outer,
+                centerY + kotlin.math.cos(angle) * outer,
+            ),
+            strokeWidth = 1.dp.toPx(),
+        )
+    }
+}
+
+private fun DrawScope.drawLeafMark(x: Float, centerY: Float, color: Color) {
+    val leaf = Path().apply {
+        moveTo(x - 5.dp.toPx(), centerY + 4.dp.toPx())
+        cubicTo(
+            x - 6.dp.toPx(), centerY - 3.dp.toPx(),
+            x + 2.dp.toPx(), centerY - 7.dp.toPx(),
+            x + 5.dp.toPx(), centerY - 4.dp.toPx(),
+        )
+        cubicTo(
+            x + 5.dp.toPx(), centerY + 2.dp.toPx(),
+            x - 1.dp.toPx(), centerY + 6.dp.toPx(),
+            x - 5.dp.toPx(), centerY + 4.dp.toPx(),
+        )
+        close()
+    }
+    drawPath(leaf, color)
+    drawLine(
+        color = Color(0xFFF4E2BF),
+        start = androidx.compose.ui.geometry.Offset(x - 4.dp.toPx(), centerY + 4.dp.toPx()),
+        end = androidx.compose.ui.geometry.Offset(x + 4.dp.toPx(), centerY - 4.dp.toPx()),
+        strokeWidth = 1.dp.toPx(),
     )
 }
 

@@ -32,12 +32,38 @@ class BeerCatchEngineTest {
     }
 
     @Test
+    fun fallingBeersAccelerateAsTimePasses() {
+        val engine = BeerCatchEngine()
+
+        repeat(30) {
+            engine.advance(0.05f, width = 360f, height = 10_000f)
+        }
+        val firstBeer = engine.state.beers.first { it.id == 0 }
+        repeat(20) {
+            engine.advance(0.05f, width = 360f, height = 10_000f)
+        }
+        val fasterBeer = engine.state.beers.first { it.id == 0 }
+
+        assertTrue(fasterBeer.speed > firstBeer.speed)
+    }
+
+    @Test
+    fun fallingCansUseDifferentOriginalDesigns() {
+        val engine = BeerCatchEngine()
+        repeat(120) {
+            engine.advance(0.05f, width = 360f, height = 10_000f)
+        }
+
+        assertEquals(BeerCatchEngine.CAN_DESIGN_COUNT, engine.state.beers.map { it.design }.distinct().size)
+    }
+
+    @Test
     fun beerFallingOutsideBasketCountsAsMiss() {
         val engine = BeerCatchEngine()
         engine.advance(0.05f, width = 360f, height = 640f)
         engine.moveCatcherTo(304f)
 
-        repeat(100) {
+        repeat(200) {
             engine.advance(0.05f, width = 360f, height = 640f)
         }
 
