@@ -6,9 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.hugodev.horasconamor.navigation.AppNavigation
 import com.hugodev.horasconamor.ui.OvertimeViewModel
+import com.hugodev.horasconamor.ui.theme.AnimatedTechBackground
 import com.hugodev.horasconamor.ui.theme.HorasConAmorTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +27,10 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             HorasConAmorTheme {
-                AppNavigation(overtimeViewModel)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AnimatedTechBackground(modifier = Modifier.fillMaxSize())
+                    AppNavigation(overtimeViewModel)
+                }
             }
         }
     }

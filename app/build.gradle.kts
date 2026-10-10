@@ -4,6 +4,21 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+val releaseSigningPropertyNames = listOf(
+    "PLAY_UPLOAD_STORE_FILE",
+    "PLAY_UPLOAD_STORE_PASSWORD",
+    "PLAY_UPLOAD_KEY_ALIAS",
+    "PLAY_UPLOAD_KEY_PASSWORD",
+)
+val releaseSigningProperties = releaseSigningPropertyNames.associateWith { name ->
+    providers.gradleProperty(name)
+        .orElse(providers.environmentVariable(name))
+        .orNull
+}
+val releaseSigningConfigured = releaseSigningPropertyNames.all { name ->
+    !releaseSigningProperties[name].isNullOrBlank()
+}
+
 android {
     namespace = "com.hugodev.horasconamor"
     compileSdk = 37
@@ -14,6 +29,26 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
+    }
+
+    signingConfigs {
+        if (releaseSigningConfigured) {
+            create("release") {
+                storeFile = file(requireNotNull(releaseSigningProperties["PLAY_UPLOAD_STORE_FILE"]))
+                storePassword = requireNotNull(releaseSigningProperties["PLAY_UPLOAD_STORE_PASSWORD"])
+                keyAlias = requireNotNull(releaseSigningProperties["PLAY_UPLOAD_KEY_ALIAS"])
+                keyPassword = requireNotNull(releaseSigningProperties["PLAY_UPLOAD_KEY_PASSWORD"])
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            if (releaseSigningConfigured) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
 
     buildFeatures {
@@ -29,6 +64,24 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+val verifyReleaseSigning = tasks.register("verifyReleaseSigning") {
+    doLast {
+        check(releaseSigningConfigured) {
+            """
+            Release signing is not configured. Set PLAY_UPLOAD_STORE_FILE,
+            PLAY_UPLOAD_STORE_PASSWORD, PLAY_UPLOAD_KEY_ALIAS, and PLAY_UPLOAD_KEY_PASSWORD
+            in the environment or your user-level Gradle properties before building a release.
+            """.trimIndent()
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "bundleRelease" || name == "assembleRelease") {
+        dependsOn(verifyReleaseSigning)
     }
 }
 

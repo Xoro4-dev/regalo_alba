@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17152d"/>
+      <stop offset="0.55" stop-color="#30213f"/>
+      <stop offset="1" stop-color="#542c58"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop offset="0" stop-color="#ff6fae" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#ff6fae" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#background)"/>
+  <circle cx="765" cy="220" r="290" fill="url(#glow)"/>
+  <g fill="none" stroke="#9582b2" stroke-opacity=".18">
+    <path d="M0 90h1024M0 170h1024M0 250h1024M0 330h1024M0 410h1024"/>
+    <path d="M80 0v500M160 0v500M240 0v500M320 0v500M400 0v500M480 0v500M560 0v500M640 0v500M720 0v500M800 0v500M880 0v500M960 0v500"/>
+  </g>
+  <g transform="translate(720 87)">
+    <circle cx="112" cy="122" r="91" fill="none" stroke="#fff4e8" stroke-width="14"/>
+    <path d="M112 122V65M112 122h49" fill="none" stroke="#ff6fae" stroke-width="15" stroke-linecap="round"/>
+    <path d="M216 169c-25-27-67-11-67 24 0 31 36 56 67 78 31-22 67-47 67-78 0-35-42-51-67-24Z" fill="#ff6fae"/>
+    <circle cx="251" cy="60" r="8" fill="#ffe0bd"/>
+    <circle cx="43" cy="246" r="6" fill="#ffe0bd"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#fff4f8">
+    <text x="72" y="205" font-size="60" font-weight="700">Horas con Amor</text>
+    <text x="76" y="267" font-size="28" fill="#e4d6e8">Tus horas extra, con perspectiva.</text>
+    <rect x="76" y="315" width="10" height="74" rx="5" fill="#ff6fae"/>
+    <text x="108" y="348" font-size="23" font-weight="600">Registra. Respira.</text>
+    <text x="108" y="382" font-size="23" font-weight="600">Y no olvides vivir.</text>
+  </g>
+</svg>

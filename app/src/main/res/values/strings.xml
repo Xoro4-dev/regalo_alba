@@ -2,18 +2,17 @@
     <string name="app_name">Horas con Amor</string>
     <string name="navigation_home">Inicio</string>
     <string name="navigation_history">Historial</string>
+    <string name="navigation_game">Minijuego</string>
     <string name="navigation_settings">Ajustes</string>
-    <string name="home_greeting">Un día menos para descansar</string>
+    <string name="home_greeting">Un día menos para vernos</string>
     <string name="today_total_label">HORAS EXTRA DE HOY</string>
-    <string name="counter_status_label">ALERTA DE TURNO // HORAS EXTRA</string>
+    <string name="counter_status_label">CONTADOR DE HORAS EXTRAMIERDOSAS</string>
     <string name="increment_label">+%1$d min</string>
     <string name="decrement_label">−%1$d min</string>
     <string name="week_total_label">Esta semana</string>
     <string name="week_total_hint">Acumulado desde el lunes</string>
-    <string name="counter_reassurance">Cada minuto cuenta. Y luego, a disfrutar.</string>
+    <string name="counter_reassurance">Recuerda que vivir es más importante que el trabajo. Te quiero.</string>
     <string name="weekend_counter_message">Modo descanso activado. El contador vuelve el lunes; hoy no fichamos.</string>
-    <string name="time_removed_message">Tiempo corregido</string>
-    <string name="undo_action">Deshacer</string>
     <string name="history_title">Tu historial</string>
     <string name="week_of_label">Semana</string>
     <string name="previous_week">Semana anterior</string>
@@ -30,20 +29,25 @@
     <string name="anger_calm">Calma total. El novio sigue en periodo de prueba.</string>
     <string name="anger_mild">Se detecta una pequeña perturbación en la fuerza.</string>
     <string name="anger_warning">Alerta: se recomienda que el novio traiga cerveza.</string>
-    <string name="anger_critical">CÓDIGO ROJO. CREADOR, ALÉJATE DEL TECLADO.</string>
+    <string name="anger_critical">O COMPRO MATCHBALLS O MUERO</string>
     <string name="love_meter_title">¿Cuánto quieres a tu novio?</string>
-    <string name="love_meter_caption">No se puede editar. El resultado ya está científicamente decidido.</string>
+    <string name="love_meter_caption">Intenta bajarlo. El amor rebota al 100% porque esto ya está científicamente decidido.</string>
+    <string name="love_meter_reset_hint">Se ha bajado un instante... rebotando al 100%</string>
     <string name="beer_meter_title">Probabilidad de que te invite a una cerveza</string>
     <string name="beer_meter_caption">Ajusta las expectativas. El contador no acepta reclamaciones.</string>
     <string name="local_storage_notice">El historial se guarda solo en este dispositivo.</string>
     <string name="workdays_only_hint">Solo días laborables · lunes a viernes</string>
     <string name="weekly_message_under_two">Muy bien mi niña, a trabajar lo justo y necesario para pagarte las cervezas.</string>
     <string name="weekly_message_two_to_five">Guapaaaaaa recuerda que puedes dejar trabajo acumulado para la siguiente coordinadora.</string>
-    <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!!STOP WORKING¡¡¡¡¡</string>
-    <string-array name="reaction_messages">
-        <item>¡Ese reloj te debe una!</item>
-        <item>Una más para la hucha del descanso.</item>
-        <item>Apuntado. Que conste en acta.</item>
-        <item>Otro minuto más cerca de la cerveza.</item>
-    </string-array>
+    <string name="weekly_message_over_five">RIESGO INMINENTE DE ATAQUE DE ANSIEDAD !!!!!STOP WORKING!!!!!</string>
+    <string name="game_title">¡A por las cervezas!</string>
+    <string name="game_subtitle">Mueve la caja y atrapa todas las que puedas.</string>
+    <string name="game_score">Puntuación: %1$d</string>
+    <string name="game_miss_singular">cerveza perdida</string>
+    <string name="game_miss_plural">cervezas perdidas</string>
+    <string name="game_controls_hint">Desliza el dedo para mover la caja. Cada cerveza atrapada suma un punto.</string>
+    <string name="game_over_title">¡Se acabaron las cajas!</string>
+    <string name="game_over_message_singular">Has atrapado %1$d cerveza. ¡Intenta superar tu récord!</string>
+    <string name="game_over_message_plural">Has atrapado %1$d cervezas. ¡Intenta superar tu récord!</string>
+    <string name="game_restart">Jugar otra vez</string>
 </resources>

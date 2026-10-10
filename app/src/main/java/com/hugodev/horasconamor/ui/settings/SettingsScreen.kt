@@ -1,5 +1,8 @@
 package com.hugodev.horasconamor.ui.settings
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,15 +15,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,11 +45,37 @@ fun SettingsScreen(viewModel: OvertimeViewModel) {
     val incrementMinutes by viewModel.incrementMinutes.collectAsState()
     val angerLevel by viewModel.angerLevel.collectAsState()
     val beerChance by viewModel.beerChance.collectAsState()
+    var loveValue by remember { mutableFloatStateOf(100f) }
+    var loveResetTrigger by remember { mutableIntStateOf(0) }
+    val loveBounce = remember { Animatable(0f) }
     val angerDescription = when {
         angerLevel < 25 -> stringResource(R.string.anger_calm)
         angerLevel < 50 -> stringResource(R.string.anger_mild)
         angerLevel < 75 -> stringResource(R.string.anger_warning)
         else -> stringResource(R.string.anger_critical)
+    }
+
+    LaunchedEffect(loveResetTrigger) {
+        if (loveResetTrigger == 0) return@LaunchedEffect
+        val progress = Animatable((loveValue / 100f).coerceIn(0f, 1f))
+        progress.animateTo(
+            targetValue = 1f,
+            animationSpec = spring(dampingRatio = 0.42f, stiffness = 180f),
+        ) {
+            loveValue = value * 100f
+        }
+        loveValue = 100f
+        loveBounce.animateTo(
+            targetValue = 0f,
+            animationSpec = keyframes {
+                durationMillis = 420
+                0f at 0
+                1f at 110
+                0f at 230
+                0.45f at 310
+                0f at 420
+            },
+        )
     }
 
     Column(
@@ -117,24 +155,44 @@ fun SettingsScreen(viewModel: OvertimeViewModel) {
             title = stringResource(R.string.love_meter_title),
             subtitle = stringResource(R.string.love_meter_caption),
         ) {
+            Slider(
+                value = (loveValue / 100f).coerceIn(0f, 1f),
+                onValueChange = { loveValue = it * 100f },
+                onValueChangeFinished = { loveResetTrigger += 1 },
+                valueRange = 0f..1f,
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.secondary,
+                    activeTrackColor = MaterialTheme.colorScheme.secondary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.22f),
+                ),
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                LinearProgressIndicator(
-                    progress = { 1f },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                Text(
+                    text = stringResource(R.string.love_meter_reset_hint),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = stringResource(R.string.percentage_label, 100),
+                    text = stringResource(R.string.percentage_label, loveValue.roundToInt()),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary,
+                )
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .graphicsLayer {
+                            translationY = -loveBounce.value * 14.dp.toPx()
+                            scaleX = 1f + loveBounce.value * 0.22f
+                            scaleY = 1f + loveBounce.value * 0.22f
+                        },
                 )
             }
         }
